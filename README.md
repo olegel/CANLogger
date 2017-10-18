@@ -1,2 +1,6 @@
 # CANLogger
-CAN bus logger and analyzer tool
+CAN bus logger and analyser tool
+
+Known issues:
+- CAN bus baud-rate setting is ignored yet
+
