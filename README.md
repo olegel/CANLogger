@@ -13,6 +13,10 @@ Features:
 - message investigating with data comparer
 - holding sender descriptions between sessions
 
+![Main window](https://github.com/olegel/CANLogger/raw/master/MainWindow.jpg)
+
+![Investigation](https://github.com/olegel/CANLogger/raw/master/Investigation.jpg)
+
 Known issues:
 - CAN bus baud-rate setting is ignored yet
 
