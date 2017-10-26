@@ -74,7 +74,8 @@ namespace VolvoCanLogger
             //_dataProcessor.SetConfig(config);
 
             cmbComPort.Items.AddRange(System.IO.Ports.SerialPort.GetPortNames());
-            cmbComPort.SelectedIndex = 0;
+            if( cmbComPort.Items.Count > 0 )
+                cmbComPort.SelectedIndex = 0;
 
             cmbComSpeed.SelectedIndex = 5;
             cmbCanBitrate.SelectedIndex = 4;
