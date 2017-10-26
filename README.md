@@ -3,7 +3,8 @@ CAN bus logger and analyser tool
 
 Features:
 
-- realtime data processing from CAN-USB devices (Arduino + MCP2151 )
+- realtime data processing from CAN-USB devices (Arduino + MCP2151 ) 
+  I've used this https://github.com/latonita/arduino-canbus-monitor
 - saving received data to log files for further processing
 - playback log files
 - separate messages by sender id, assigning human readable description to senders
