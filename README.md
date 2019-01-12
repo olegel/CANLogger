@@ -1,7 +1,7 @@
 # CANLogger
 CAN bus logger and analyser tool
 
-Features:
+## Features:
 
 - realtime data processing from CAN-USB devices (Arduino + MCP2151 ) 
   I've used this https://github.com/latonita/arduino-canbus-monitor
@@ -18,6 +18,8 @@ Features:
 
 ![Investigation](https://github.com/olegel/CANLogger/raw/master/Investigation.jpg)
 
-Known issues:
+## Known issues:
 - CAN bus baud-rate setting is ignored yet
 
+## More information
+* More information you can find in my blog (Russian) (https://olegel.blogspot.com/2019/01/can-volvo-xc90.html)
