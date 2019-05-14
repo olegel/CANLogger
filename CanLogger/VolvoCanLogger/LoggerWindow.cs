@@ -61,7 +61,6 @@ namespace VolvoCanLogger
                 _dataProcessor.SetConfig(configData);
 
             _receivedMessageProcessors = new IReceivedMessageProcessor[] { _dataProcessor, _logData, _fileLogger };
-
         }
 
         private void LoggerWindow_Load(object sender, EventArgs e)
@@ -332,6 +331,7 @@ namespace VolvoCanLogger
         private void btnReset_Click(object sender, EventArgs e)
         {
             _dataProcessor.ResetData();
+            //throw new ArgumentException("The parameter was invalid");
         }
 
         private void btnResetNew_Click(object sender, EventArgs e)
