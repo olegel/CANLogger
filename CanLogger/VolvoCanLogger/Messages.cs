@@ -20,7 +20,7 @@ namespace VolvoCanLogger
 
         public string Dump()
         {
-            return string.Format("{0}. {1} {2}", Time, Id, Helpers.DataMaskAsString(Data));
+            return string.Format("{0}. {1:X} {2}", Time, Id, Helpers.DataMaskAsString(Data));
         }
 
         public string DisplayText
@@ -47,9 +47,9 @@ namespace VolvoCanLogger
         public void GenerateLogText()
         {
             if (CanMessage != null)
-                LogText = string.Format("{0}. {1}", RawId, CanMessage.Dump());
+                LogText = $"{RawId}. {CanMessage.Dump()}";
             else
-                LogText = string.Format("{0}. {1}", RawId, RawText);
+                LogText = $"{RawId}. {RawText}";
         }
     }
 
