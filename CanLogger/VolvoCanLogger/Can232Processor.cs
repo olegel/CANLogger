@@ -36,7 +36,7 @@ namespace VolvoCanLogger
                 var messageList = new ReceivedMessageList();
                 var receivedMessage = messageList.Add(++_rawId, line);
 
-                CanMessage canMessage = ProcessMessageData(line);
+                CanMessage canMessage = ProcessMessageData(line, receivedMessage);
                 if (canMessage != null)
                 {
                     receivedMessage.CanMessage = canMessage;
@@ -104,74 +104,89 @@ namespace VolvoCanLogger
 
                 var receivedMessage = messageList.Add(++_rawId, message);
 
-                CanMessage canMessage = ProcessMessageData(message);
+
+                CanMessage canMessage = ProcessMessageData(message, receivedMessage);
                 if (canMessage != null)
-                {
                     receivedMessage.CanMessage = canMessage;
-                }
             }
             return -1;
         }
 
-        CanMessage ProcessMessageData(string data)
+        CanMessage ProcessMessageData(string data, ReceivedMessage receivedMessage)
         {
             CanMessage canMessage = null;
 
-            int length = data.Length;
-            int pos = 0;
-            int c = data[pos];
-            int idLen = 0;
-            switch (c)
+            Exception processingException = null;
+            try
             {
-                case 'T':
-                    idLen = 8;
+                int length = data.Length;
+                int pos = 0;
+                int c = data[pos];
+                int idLen = 0;
+                switch (c)
+                {
+                    case 'T':
+                        idLen = 8;
+                        break;
+                    case 't':
+                        idLen = 3;
+                        break;
+                }
+
+                while (true)
+                {
+                    if (idLen <= 0)
+                        break;
+
+                    pos++;
+
+                    if (length < idLen + pos)
+                        break;
+
+                    string idTxt = data.Substring(pos, idLen);
+                    pos += idLen;
+
+                    if (length < pos + 1)
+                        break;
+
+                    int dataByteCount = int.Parse(data.Substring(pos, 1));
+                    if (dataByteCount < 0 || dataByteCount > 8)
+                        break;
+                    pos++;
+                    if (length < pos + dataByteCount * 2)
+                        break;
+
+                    string dataTxt = data.Substring(pos, dataByteCount * 2);
+                    pos += dataByteCount * 2;
+
+                    string timeTxt = "00";
+                    if (pos < length)
+                        timeTxt = data.Substring(pos);
+
+                    canMessage = new CanMessage();
+                    canMessage.Id = Convert.ToInt32(idTxt, 16);
+                    canMessage.Time = Convert.ToInt32(timeTxt, 16);
+                    canMessage.DataCount = dataByteCount;
+                    for (int i = 0; i < dataByteCount; i++)
+                    {
+                        string s = dataTxt.Substring(i * 2, 2);
+                        byte b = (byte)Convert.ToInt32(s, 16);
+                        canMessage.Data = Helpers.SetDataByte(canMessage.Data, i, b);
+                    }
                     break;
-                case 't':
-                    idLen = 3;
-                    break;
+                }
+            }
+            catch (Exception ex)
+            {
+                processingException = ex;
+                canMessage = null;
             }
 
-            while (true)
+            if (processingException != null)
             {
-                if (idLen <= 0)
-                    break;
-
-                pos++;
-
-                if (length < idLen + pos)
-                    break;
-
-                string idTxt = data.Substring(pos, idLen);
-                pos += idLen;
-
-                if (length < pos + 1)
-                    break;
-
-                int dataByteCount = int.Parse(data.Substring(pos, 1));
-                if (dataByteCount < 0 || dataByteCount > 8)
-                    break;
-                pos++;
-                if (length < pos + dataByteCount * 2)
-                    break;
-
-                string dataTxt = data.Substring(pos, dataByteCount * 2);
-                pos += dataByteCount * 2;
-
-                string timeTxt = "00";
-                if (pos < length)
-                    timeTxt = data.Substring(pos);
-
-                canMessage = new CanMessage();
-                canMessage.Id = Convert.ToInt32(idTxt, 16);
-                canMessage.Time = Convert.ToInt32(timeTxt, 16);
-                canMessage.DataCount = dataByteCount;
-                for (int i = 0; i < dataByteCount; i++)
-                {
-                    string s = dataTxt.Substring(i * 2, 2);
-                    byte b = (byte)Convert.ToInt32(s, 16);
-                    canMessage.Data = Helpers.SetDataByte(canMessage.Data, i, b);
-                }
-                break;
+                receivedMessage.RawText = "Invalid data: " + data;
+                string errorMsg = $"\n{DateTime.Now} Exception: {processingException.Message}\nProcessing '{data}'\nStack Trace:\n {processingException.StackTrace}";
+                System.IO.File.AppendAllText("error.log", errorMsg);
             }
             return canMessage;
         }
