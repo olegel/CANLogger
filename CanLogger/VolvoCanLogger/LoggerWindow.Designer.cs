@@ -212,7 +212,13 @@
             "19200",
             "38400",
             "57600",
-            "115200"});
+            "115200",
+            "230400",
+            "250000",
+            "500000",
+            "1000000",
+            "2000000"
+            });
             this.cmbComSpeed.Location = new System.Drawing.Point(146, 31);
             this.cmbComSpeed.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cmbComSpeed.Name = "cmbComSpeed";

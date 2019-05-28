@@ -14,6 +14,8 @@ namespace VolvoCanLogger
         [STAThread]
         static void Main()
         {
+            if (Environment.OSVersion.Version.Major >= 6) SetProcessDPIAware();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -23,6 +25,9 @@ namespace VolvoCanLogger
 
             Application.Run(new LoggerWindow());
         }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool SetProcessDPIAware();
 
         private static void SaveExceptionToFile(Exception ex)
         {
